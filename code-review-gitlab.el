@@ -486,13 +486,14 @@ Optionally sets FALLBACK? to get minimal query."
       ("REQUEST_CHANGES"
        (error "Not supported in Gitlab"))
       ("COMMENT"
-       (glab-post (format "/v4/projects/%s/merge_requests/%s/discussions"
-                          (code-review-gitlab--project-id pr)
-                          (oref pr number))
-                  nil
-                  :auth code-review-auth-login-marker
-                  :host code-review-gitlab-host
-                  :payload `((body . ,(oref review feedback))))
+       (when (oref review feedback)
+         (glab-post (format "/v4/projects/%s/merge_requests/%s/discussions"
+                            (code-review-gitlab--project-id pr)
+                            (oref pr number))
+                    nil
+                    :auth code-review-auth-login-marker
+                    :host code-review-gitlab-host
+                    :payload `((body . ,(oref review feedback)))))
        (message "Review Comment successfully sent!")))
 
     ;; 3. call callback
